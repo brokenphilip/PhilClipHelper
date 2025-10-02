@@ -698,7 +698,7 @@ namespace PhilClipHelper
 
                 args += " -c:v copy -c:a aac \"" + videoFile + "\"";
 
-                new SaveForm(args, videoFile).ShowDialog();
+                new SaveForm(args, videoFile, Location, Size).ShowDialog();
             }
         }
 

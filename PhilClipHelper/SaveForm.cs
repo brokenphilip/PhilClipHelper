@@ -15,16 +15,24 @@ namespace PhilClipHelper
     public partial class SaveForm : Form
     {
         private string args = "";
-        private string fileName = "";
+        private string videoFile = "";
 
-        public SaveForm(string args, string outputName)
+        private Point mainFormLocation;
+        private Size mainFormSize;
+
+        private Process process;
+        private bool processRunning = false;
+
+        public SaveForm(string args, string videoFile, Point mainFormLocation, Size mainFormSize)
         {
             this.args = args;
-            this.fileName = outputName;
+            this.videoFile = videoFile;
+            this.mainFormLocation = mainFormLocation;
+            this.mainFormSize = mainFormSize;
 
             InitializeComponent();
 
-            if (MainForm.useDarkTheme)
+            if (Program.useDarkTheme)
             {
                 Color dark = Color.FromArgb(255, 32, 32, 32);
                 Color light = Color.FromArgb(255, 224, 224, 224);
@@ -61,36 +69,59 @@ namespace PhilClipHelper
                 }
             }
 
-            labelStatus.Text = "\"" + Path.GetFileName(fileName) + "\" is being saved...";
+            labelStatus.Text = "\"" + Path.GetFileName(videoFile) + "\" is being saved...";
         }
 
-        private void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private void process_DataReceived(object sender, DataReceivedEventArgs e)
         {
-            textBoxOutput.Text += e.Data;
-        }
+            if (String.IsNullOrEmpty(e.Data))
+            {
+                return;
+            }
 
-        Process process;
+            Invoke(new MethodInvoker(delegate ()
+            {
+                textBoxOutput.AppendText(e.Data + Environment.NewLine);
+            }));
+        }
 
         private void process_Exited(object sender, EventArgs e)
         {
-            if (File.Exists(fileName))
+            Invoke(new MethodInvoker(delegate ()
             {
-                labelStatus.Text = "\"" + Path.GetFileName(fileName) + "\" has been saved.";
-            }
-            else
-            {
-                labelStatus.Text = "\"" + Path.GetFileName(fileName) + "\" failed to save!";
-            }
+                if (File.Exists(videoFile))
+                {
+                    labelStatus.Text = "\"" + Path.GetFileName(videoFile) + "\" has been saved.";
+                    buttonPlay.Enabled = true;
+                    buttonFolder.Enabled = true;
+                }
+                else
+                {
+                    labelStatus.Text = "\"" + Path.GetFileName(videoFile) + "\" failed to save!";
+                }
+
+                labelStatus.Font = new Font(labelStatus.Font, FontStyle.Bold);
+                buttonClose.Enabled = true;
+            }));
 
             process.Close();
+            processRunning = false;
         }
 
         private void SaveForm_Load(object sender, EventArgs e)
         {
+            double midWidth = mainFormLocation.X + (mainFormSize.Width / 2.0);
+            double midHeight = mainFormLocation.Y + (mainFormSize.Height / 2.0);
+
+            double halfWidth = (Size.Width / 2.0);
+            double halfHeight = (Size.Height / 2.0);
+
+            Location = new Point((int)(midWidth - halfWidth), (int)(midHeight - halfHeight));
+
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.CreateNoWindow = true;
             startInfo.UseShellExecute = false;
-            startInfo.FileName = "C:\\PathTools\\FFmpeg\\bin\\ffmpeg.exe";
+            startInfo.FileName = "ffmpeg.exe";
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.Arguments = args;
 
@@ -98,12 +129,59 @@ namespace PhilClipHelper
             startInfo.RedirectStandardOutput = true;
 
             process = new Process();
-            process.ErrorDataReceived += new DataReceivedEventHandler(process_ErrorDataReceived);
-            process.OutputDataReceived += new DataReceivedEventHandler(process_ErrorDataReceived);
+            process.EnableRaisingEvents = true;
+            process.ErrorDataReceived += new DataReceivedEventHandler(process_DataReceived);
+            process.OutputDataReceived += new DataReceivedEventHandler(process_DataReceived);
             process.Exited += new EventHandler(process_Exited);
             process.StartInfo = startInfo;
-            process.Start();
+            try
+            {
+                process.Start();
+            }
+            catch (Win32Exception ex)
+            {
+                process.Close();
+                MessageBox.Show("FFmpeg failed to start: " + ex.Message, "Phil(C)lipHelper", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+                return;
+            }
+
+            processRunning = true;
             process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+        }
+
+        private void buttonPlay_Click(object sender, EventArgs e)
+        {
+            Process.Start(videoFile);
+        }
+
+        private void buttonFolder_Click(object sender, EventArgs e)
+        {
+            Process.Start(Path.GetDirectoryName(videoFile));
+        }
+
+        private void buttonClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void SaveForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (processRunning)
+            {
+                process.Kill();
+                process.Close();
+                processRunning = false;
+            }
+        }
+
+        private void SaveForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (processRunning)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }
