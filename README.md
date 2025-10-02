@@ -5,3 +5,5 @@ Currently, customization is lacking and many options are hardcoded, as this proj
 
 > [!NOTE]
 > This repository is currently an **early work-in-progress**, any and all information is subject to change without notice and may be missing or incorrect.
+
+<img width="642" height="539" alt="image" src="https://github.com/user-attachments/assets/89d15aef-a81b-44f8-b517-999214b1197f" />
