@@ -53,6 +53,7 @@ namespace PhilClipHelper
 
                 BackColor = dark;
 
+                // These aren't in Controls for whatever reason...
                 textBoxTrimFrom.ForeColor = light;
                 textBoxTrimFrom.BackColor = dark;
 

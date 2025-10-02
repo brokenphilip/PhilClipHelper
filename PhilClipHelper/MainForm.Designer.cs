@@ -282,9 +282,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPlay.Image = global::PhilClipHelper.Properties.Resources.play_solid_full;
-            this.buttonPlay.Location = new System.Drawing.Point(271, 405);
+            this.buttonPlay.Location = new System.Drawing.Point(271, 413);
             this.buttonPlay.Name = "buttonPlay";
-            this.buttonPlay.Size = new System.Drawing.Size(98, 90);
+            this.buttonPlay.Size = new System.Drawing.Size(98, 82);
             this.buttonPlay.TabIndex = 5;
             this.buttonPlay.TabStop = false;
             this.buttonPlay.Text = "Play";
@@ -325,13 +325,15 @@
             // 
             // labelTime
             // 
-            this.labelTime.AutoSize = true;
+            this.labelTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.labelTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTime.Location = new System.Drawing.Point(258, 389);
+            this.labelTime.Location = new System.Drawing.Point(258, 397);
             this.labelTime.Name = "labelTime";
             this.labelTime.Size = new System.Drawing.Size(121, 13);
             this.labelTime.TabIndex = 19;
             this.labelTime.Text = "0:00.000 / 0:00.000";
+            this.labelTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MainForm
             // 
