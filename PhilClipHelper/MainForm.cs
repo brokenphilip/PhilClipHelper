@@ -549,7 +549,7 @@ namespace PhilClipHelper
 
                 if (audioFile == "")
                 {
-                    if (MessageBox.Show("No audio file associated with this video was found. Try loading another one?", "Phi(C)lipHelper", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    if (MessageBox.Show("No audio file associated with this video was found.\n\nDo you want to try loading another audio file?", "Phi(C)lipHelper", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         if (openAVDialog.ShowDialog() == DialogResult.OK)
                         {
