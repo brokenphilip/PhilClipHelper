@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,9 +27,11 @@ namespace PhilClipHelper
 
         private MediaPlayer mpVideo;
         private string mpVideoFile = "";
+        private int mpVideoVolume = 25;
 
         private MediaPlayer mpAudio;
         private string mpAudioFile = "";
+        private int mpAudioVolume = 100;
 
         // Time in milliseconds to delay the audio clip
         // ie. how many milliseconds to wait for the video clip to play the audio clip
@@ -41,6 +44,91 @@ namespace PhilClipHelper
 
         private bool seeking = false;
         private bool unpauseAfterSeeking = false;
+
+        struct DialogFormat
+        {
+            public string name;
+            public string ext;
+
+            public DialogFormat(string name, string ext)
+            {
+                this.name = name;
+                this.ext = ext;
+            }
+
+            // Appends filters/formats for the Save/OpenFileDialog - only for internal use by SetOpen/SaveDialogFilters
+            private static void AppendFileDialogFilters(FileDialog fd, DialogFormat[] dfs)
+            {
+                bool firstFormat = true;
+
+                // We immediately want to add a '|', if this filter isn't empty, as we're about to append more formats to it
+                if (!String.IsNullOrEmpty(fd.Filter))
+                {
+                    firstFormat = false;
+                }
+
+                // Can't modify fd.Filter directly, otherwise exceptions will be thrown - make a temporary variable first, and then copy it over to the file dialog filters
+                string filter = "";
+                foreach (DialogFormat df in dfs)
+                {
+                    if (!firstFormat)
+                    {
+                        filter += "|";
+                    }
+
+                    firstFormat = false;
+                    filter += df.name + "|" + df.ext;
+                }
+
+                // Note that this function is "Append", not "Set" - the caller has the responsibility to clear the filters beforehand
+                fd.Filter += filter;
+            }
+
+            // First adds a filter for all supported formats, then appends the rest of the filters/formats, and finally adds a filter for "All Files"
+            public static void SetOpenDialogFilters(OpenFileDialog ofd, DialogFormat[] dfs)
+            {
+                bool firstFormat = true;
+                string supportedExts = "";
+
+                foreach (DialogFormat df in dfs)
+                {
+                    if (!firstFormat)
+                    {
+                        supportedExts += ";";
+                    }
+
+                    firstFormat = false;
+                    supportedExts += df.ext;
+                }
+
+                ofd.Filter = "Supported files|" + supportedExts;
+                AppendFileDialogFilters(ofd, dfs);
+                ofd.Filter += "|All files|*.*";
+            }
+
+            // Simply appends the listed formats for the save dialog filters, as we can't save as "Supported files"/"All files"
+            public static void SetSaveDialogFilters(SaveFileDialog sfd, DialogFormat[] dfs)
+            {
+                sfd.Filter = "";
+                AppendFileDialogFilters(sfd, dfs);
+            }
+        }
+
+        DialogFormat[] videoFormats =
+        {
+            new DialogFormat("MPEG-4 Video", "*.mp4"),
+            new DialogFormat("Flash Video", "*.flv"),
+            new DialogFormat("Audio Video Interleave", "*.avi"),
+            new DialogFormat("Matroska Video", "*.mkv"),
+            new DialogFormat("QuickTime Video", "*.mov"),
+        };
+
+        DialogFormat[] audioFormats =
+        {
+            new DialogFormat("MPEG-4 Audio", "*.m4a"),
+            new DialogFormat("MPEG-3 Audio", "*.mp3"),
+            new DialogFormat("Waveform Audio", "*.wav"),
+        };
 
         public MainForm()
         {
@@ -119,8 +207,8 @@ namespace PhilClipHelper
             //mpAudio.Buffering += new EventHandler<MediaPlayerBufferingEventArgs>(mpAudio_Buffering);
             mpAudio.EncounteredError += new EventHandler<EventArgs>(mpAudio_EncounteredError);
 
-            volumeBarVideo.Value = mpVideo.Volume = 25;
-            volumeBarAudio.Value = mpAudio.Volume = 100;
+            volumeBarVideo.Value = mpVideoVolume;
+            volumeBarAudio.Value = mpAudioVolume;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -244,6 +332,9 @@ namespace PhilClipHelper
                 return;
             }
 
+            mpAudio.Volume = mpAudioVolume;
+            mpVideo.Volume = mpVideoVolume;
+
             if (e.Cache < 100.0)
             {
                 // DO NOT CALL InvokeControl HERE UNDER ANY CIRCUMSTANCES
@@ -305,6 +396,9 @@ namespace PhilClipHelper
             {
                 buttonPlay.Text = "Pause";
             });
+
+            mpAudio.Volume = mpAudioVolume;
+            mpVideo.Volume = mpVideoVolume;
 
             mpAudio.SetPause(false);
         }
@@ -460,9 +554,6 @@ namespace PhilClipHelper
                 mpVideo.Stop();
                 mpAudio.Stop();
 
-                mpAudio.Volume = volumeBarAudio.Value;
-                mpVideo.Volume = volumeBarVideo.Value;
-
                 mpVideo.Play();
                 mpAudio.Play();
             }
@@ -508,12 +599,12 @@ namespace PhilClipHelper
 
         private void volumeBarAudio_Scroll(object sender, EventArgs e)
         {
-            mpAudio.Volume = volumeBarAudio.Value;
+            mpAudio.Volume = mpAudioVolume = volumeBarAudio.Value;
         }
 
         private void volumeBarVideo_Scroll(object sender, EventArgs e)
         {
-            mpVideo.Volume = volumeBarVideo.Value;
+            mpVideo.Volume = mpVideoVolume = volumeBarVideo.Value;
         }
 
         private void buttonLoad_Click(object sender, EventArgs e)
@@ -522,6 +613,8 @@ namespace PhilClipHelper
             mpAudio.SetPause(true);
 
             openAVDialog.InitialDirectory = Properties.Settings.Default.LastLoadFolder;
+
+            DialogFormat.SetOpenDialogFilters(openAVDialog, videoFormats);
 
             if (openAVDialog.ShowDialog() == DialogResult.OK)
             {
@@ -536,13 +629,14 @@ namespace PhilClipHelper
                 int index = videoFile.LastIndexOf('.');
                 string fileNameNoExt = index == -1 ? videoFile : videoFile.Substring(0, index);
 
-                // TODO: include more supported formats here (as well as the Filters of Open/Save file dialogs)
-                string[] audioFormats = { "m4a", "wav", "mp3" };
-                foreach (string audioFormat in audioFormats)
+                foreach (DialogFormat audioFormat in audioFormats)
                 {
-                    if (File.Exists(fileNameNoExt + "." + audioFormat))
+                    int extIndex = audioFormat.ext.LastIndexOf('.');
+                    string ext = extIndex == -1 ? audioFormat.ext : audioFormat.ext.Substring(extIndex, audioFormat.ext.Length - 1);
+
+                    if (File.Exists(fileNameNoExt + ext))
                     {
-                        audioFile = fileNameNoExt + "." + audioFormat;
+                        audioFile = fileNameNoExt + ext;
                         break;
                     }
                 }
@@ -551,6 +645,7 @@ namespace PhilClipHelper
                 {
                     if (MessageBox.Show("No audio file associated with this video was found.\n\nDo you want to try loading another audio file?", "Phi(C)lipHelper", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
+                        DialogFormat.SetOpenDialogFilters(openAVDialog, audioFormats);
                         if (openAVDialog.ShowDialog() == DialogResult.OK)
                         {
                             audioFile = openAVDialog.FileName;
@@ -626,9 +721,6 @@ namespace PhilClipHelper
                 mpVideo.Stop();
                 mpAudio.Stop();
 
-                mpAudio.Volume = volumeBarAudio.Value;
-                mpVideo.Volume = volumeBarVideo.Value;
-
                 mpVideo.Play();
                 mpAudio.Play();
             }
@@ -672,6 +764,10 @@ namespace PhilClipHelper
             mpAudio.SetPause(true);
 
             saveVideoDialog.InitialDirectory = Properties.Settings.Default.LastSaveFolder;
+
+            saveVideoDialog.FileName = Path.GetFileNameWithoutExtension(mpVideoFile);
+
+            DialogFormat.SetSaveDialogFilters(saveVideoDialog, videoFormats);
 
             if (saveVideoDialog.ShowDialog() == DialogResult.OK)
             {

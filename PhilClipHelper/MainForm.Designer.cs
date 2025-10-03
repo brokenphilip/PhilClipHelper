@@ -146,9 +146,6 @@
             // 
             // openAVDialog
             // 
-            this.openAVDialog.DefaultExt = "mp4";
-            this.openAVDialog.FileName = "openFileDialog1";
-            this.openAVDialog.Filter = "Video files|*.mp4|All files|*.*";
             this.openAVDialog.Title = "Open Audio/Video file";
             // 
             // groupBoxTrimVideo
@@ -270,11 +267,6 @@
             this.checkBoxPLMenu.TabStop = false;
             this.checkBoxPLMenu.Text = "Playlist Menu";
             this.checkBoxPLMenu.UseVisualStyleBackColor = true;
-            // 
-            // saveVideoDialog
-            // 
-            this.saveVideoDialog.DefaultExt = "mp4";
-            this.saveVideoDialog.Filter = "MP4 video|*.mp4|All files|*.*";
             // 
             // buttonPlay
             // 
