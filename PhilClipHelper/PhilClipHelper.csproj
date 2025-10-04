@@ -155,12 +155,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DialogFormat.cs" />
+    <Compile Include="IPchForm.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MediaPlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveForm.cs">
@@ -168,6 +171,12 @@
     </Compile>
     <Compile Include="SaveForm.Designer.cs">
       <DependentUpon>SaveForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StartupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartupForm.Designer.cs">
+      <DependentUpon>StartupForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -184,6 +193,9 @@
     </Compile>
     <EmbeddedResource Include="SaveForm.resx">
       <DependentUpon>SaveForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StartupForm.resx">
+      <DependentUpon>StartupForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
@@ -222,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="PCH.ico" />
+    <None Include="Resources\pch.png" />
     <None Include="Resources\window-restore-regular-full.png" />
     <None Include="Resources\video-solid-full.png" />
     <None Include="Resources\upload-solid-full.png" />

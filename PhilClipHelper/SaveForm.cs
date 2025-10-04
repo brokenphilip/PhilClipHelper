@@ -14,108 +14,95 @@ namespace PhilClipHelper
 {
     public partial class SaveForm : Form
     {
-        private string args = "";
-        private string videoFile = "";
+        private string _args = "";
+        private string _videoFile = "";
 
-        private Point mainFormLocation;
-        private Size mainFormSize;
+        private Point _mainFormLocation;
+        private Size _mainFormSize;
 
-        private Process process;
-        private bool processRunning = false;
+        private Process _process;
+        private bool _processRunning = false;
 
         public SaveForm(string args, string videoFile, Point mainFormLocation, Size mainFormSize)
         {
-            this.args = args;
-            this.videoFile = videoFile;
-            this.mainFormLocation = mainFormLocation;
-            this.mainFormSize = mainFormSize;
+            _args = args;
+            _videoFile = videoFile;
+            _mainFormLocation = mainFormLocation;
+            _mainFormSize = mainFormSize;
 
             InitializeComponent();
 
-            if (Program.useDarkTheme)
+            if (Program.UseDarkTheme)
             {
-                Color dark = Color.FromArgb(255, 32, 32, 32);
-                Color light = Color.FromArgb(255, 224, 224, 224);
+                BackColor = Program.DarkTheme.BackColor;
 
-                BackColor = dark;
-
-                textBoxOutput.ForeColor = light;
-                textBoxOutput.BackColor = dark;
+                textBoxOutput.ForeColor = Program.DarkTheme.ForeColor;
+                textBoxOutput.BackColor = Program.DarkTheme.BackColor;
 
                 foreach (Control c in Controls)
                 {
                     if (c is Label)
                     {
-                        c.ForeColor = light;
+                        c.ForeColor = Program.DarkTheme.ForeColor;
                     }
                     else if (c is Button)
                     {
-                        c.BackColor = dark;
-                        c.ForeColor = light;
+                        c.BackColor = Program.DarkTheme.BackColor;
+                        c.ForeColor = Program.DarkTheme.ForeColor;
                     }
                 }
 
-                // Enable dark titlebar if supported
-                if (Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= 17763)
-                {
-                    int darkModeAttribute = 19;
-                    if (Environment.OSVersion.Version.Build >= 18985)
-                    {
-                        darkModeAttribute = 20;
-                    }
-
-                    int one = 1;
-                    MainForm.DwmSetWindowAttribute(Handle, darkModeAttribute, ref one, sizeof(int));
-                }
+                Program.EnableDarkTitlebar(this);
             }
 
             labelStatus.Text = "\"" + Path.GetFileName(videoFile) + "\" is being saved...";
         }
 
-        private void process_DataReceived(object sender, DataReceivedEventArgs e)
+        private void ProcessDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (String.IsNullOrEmpty(e.Data))
             {
                 return;
             }
 
-            Invoke(new MethodInvoker(delegate ()
+            Program.ControlBeginInvoke(textBoxOutput, new MethodInvoker(delegate ()
             {
                 textBoxOutput.AppendText(e.Data + Environment.NewLine);
             }));
         }
 
-        private void process_Exited(object sender, EventArgs e)
+        private void ProcessExited(object sender, EventArgs e)
         {
-            Invoke(new MethodInvoker(delegate ()
+            Program.ControlBeginInvoke(labelStatus, new MethodInvoker(delegate ()
             {
-                if (File.Exists(videoFile))
+                if (File.Exists(_videoFile))
                 {
-                    labelStatus.Text = "\"" + Path.GetFileName(videoFile) + "\" has been saved.";
+                    labelStatus.Text = "\"" + Path.GetFileName(_videoFile) + "\" has been saved.";
                     buttonPlay.Enabled = true;
                     buttonFolder.Enabled = true;
                 }
                 else
                 {
-                    labelStatus.Text = "\"" + Path.GetFileName(videoFile) + "\" failed to save!";
+                    labelStatus.Text = "\"" + Path.GetFileName(_videoFile) + "\" failed to save!";
                 }
 
                 labelStatus.Font = new Font(labelStatus.Font, FontStyle.Bold);
                 buttonClose.Enabled = true;
             }));
 
-            process.Close();
-            processRunning = false;
+            _process.Close();
+            _processRunning = false;
         }
 
         private void SaveForm_Load(object sender, EventArgs e)
         {
-            double midWidth = mainFormLocation.X + (mainFormSize.Width / 2.0);
-            double midHeight = mainFormLocation.Y + (mainFormSize.Height / 2.0);
+            double midWidth = _mainFormLocation.X + (_mainFormSize.Width / 2.0);
+            double midHeight = _mainFormLocation.Y + (_mainFormSize.Height / 2.0);
 
             double halfWidth = (Size.Width / 2.0);
             double halfHeight = (Size.Height / 2.0);
 
+            // Put our save form in the middle of the main form
             Location = new Point((int)(midWidth - halfWidth), (int)(midHeight - halfHeight));
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -123,42 +110,42 @@ namespace PhilClipHelper
             startInfo.UseShellExecute = false;
             startInfo.FileName = "ffmpeg.exe";
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.Arguments = args;
+            startInfo.Arguments = _args;
 
             startInfo.RedirectStandardError = true;
             startInfo.RedirectStandardOutput = true;
 
-            process = new Process();
-            process.EnableRaisingEvents = true;
-            process.ErrorDataReceived += new DataReceivedEventHandler(process_DataReceived);
-            process.OutputDataReceived += new DataReceivedEventHandler(process_DataReceived);
-            process.Exited += new EventHandler(process_Exited);
-            process.StartInfo = startInfo;
+            _process = new Process();
+            _process.EnableRaisingEvents = true;
+            _process.ErrorDataReceived += new DataReceivedEventHandler(ProcessDataReceived);
+            _process.OutputDataReceived += new DataReceivedEventHandler(ProcessDataReceived);
+            _process.Exited += new EventHandler(ProcessExited);
+            _process.StartInfo = startInfo;
             try
             {
-                process.Start();
+                _process.Start();
             }
-            catch (Win32Exception ex)
+            catch (Exception ex)
             {
-                process.Close();
+                _process.Close();
                 MessageBox.Show("FFmpeg failed to start: " + ex.Message, "Phil(C)lipHelper", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
                 return;
             }
 
-            processRunning = true;
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
+            _processRunning = true;
+            _process.BeginOutputReadLine();
+            _process.BeginErrorReadLine();
         }
 
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            Process.Start(videoFile);
+            Process.Start(_videoFile);
         }
 
         private void buttonFolder_Click(object sender, EventArgs e)
         {
-            Process.Start(Path.GetDirectoryName(videoFile));
+            Process.Start(Path.GetDirectoryName(_videoFile));
         }
 
         private void buttonClose_Click(object sender, EventArgs e)
@@ -168,18 +155,20 @@ namespace PhilClipHelper
 
         private void SaveForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (processRunning)
+            if (_processRunning)
             {
-                process.Kill();
-                process.Close();
-                processRunning = false;
+                // If we're closing anyways, fuck it, terminate FFmpeg
+                _process.Kill();
+                _process.Close();
+                _processRunning = false;
             }
         }
 
         private void SaveForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (processRunning)
+            if (_processRunning)
             {
+                // Prevent the form from closing while FFmpeg is running
                 e.Cancel = true;
             }
         }

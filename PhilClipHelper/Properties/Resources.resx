@@ -118,23 +118,23 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="backward-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\backward-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="clipboard-list-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\clipboard-list-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="download-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\download-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="forward-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\forward-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="repeat-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\repeat-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="map-pin-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\map-pin-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="video-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\video-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="upload-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\upload-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="microphone-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\microphone-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clipboard-list-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\clipboard-list-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pause-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pause-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -142,16 +142,19 @@
   <data name="play-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\play-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="repeat-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\repeat-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="upload-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\upload-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="video-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\video-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="backward-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\backward-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="window-restore-regular-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\window-restore-regular-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="download-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\download-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="forward-solid-full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\forward-solid-full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pch.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -45,12 +45,12 @@
             this.labelMS = new System.Windows.Forms.Label();
             this.numericAudioDelay = new System.Windows.Forms.NumericUpDown();
             this.checkBoxAOT = new System.Windows.Forms.CheckBox();
-            this.checkBoxPLMenu = new System.Windows.Forms.CheckBox();
             this.saveVideoDialog = new System.Windows.Forms.SaveFileDialog();
             this.buttonPlay = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.buttonLoad = new System.Windows.Forms.Button();
             this.labelTime = new System.Windows.Forms.Label();
+            this.labelStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.videoView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.seekBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.volumeBarAudio)).BeginInit();
@@ -247,7 +247,7 @@
             // 
             this.checkBoxAOT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxAOT.AutoSize = true;
-            this.checkBoxAOT.Location = new System.Drawing.Point(116, 454);
+            this.checkBoxAOT.Location = new System.Drawing.Point(119, 458);
             this.checkBoxAOT.Name = "checkBoxAOT";
             this.checkBoxAOT.Size = new System.Drawing.Size(98, 17);
             this.checkBoxAOT.TabIndex = 17;
@@ -255,18 +255,6 @@
             this.checkBoxAOT.Text = "Always On Top";
             this.checkBoxAOT.UseVisualStyleBackColor = true;
             this.checkBoxAOT.CheckedChanged += new System.EventHandler(this.checkBoxAOT_CheckedChanged);
-            // 
-            // checkBoxPLMenu
-            // 
-            this.checkBoxPLMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkBoxPLMenu.AutoSize = true;
-            this.checkBoxPLMenu.Location = new System.Drawing.Point(116, 478);
-            this.checkBoxPLMenu.Name = "checkBoxPLMenu";
-            this.checkBoxPLMenu.Size = new System.Drawing.Size(88, 17);
-            this.checkBoxPLMenu.TabIndex = 18;
-            this.checkBoxPLMenu.TabStop = false;
-            this.checkBoxPLMenu.Text = "Playlist Menu";
-            this.checkBoxPLMenu.UseVisualStyleBackColor = true;
             // 
             // buttonPlay
             // 
@@ -282,7 +270,6 @@
             this.buttonPlay.Text = "Play";
             this.buttonPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.buttonPlay.UseVisualStyleBackColor = true;
-            this.buttonPlay.TextChanged += new System.EventHandler(this.buttonPlay_TextChanged);
             this.buttonPlay.Click += new System.EventHandler(this.buttonPlay_Click);
             // 
             // buttonSave
@@ -327,13 +314,23 @@
             this.labelTime.Text = "0:00.000 / 0:00.000";
             this.labelTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // labelStatus
+            // 
+            this.labelStatus.AutoSize = true;
+            this.labelStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelStatus.Location = new System.Drawing.Point(116, 482);
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(96, 13);
+            this.labelStatus.TabIndex = 20;
+            this.labelStatus.Text = "Buffering: 100%";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(640, 507);
+            this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.labelTime);
-            this.Controls.Add(this.checkBoxPLMenu);
             this.Controls.Add(this.checkBoxAOT);
             this.Controls.Add(this.groupBoxAudioDelay);
             this.Controls.Add(this.groupBoxTrimVideo);
@@ -387,9 +384,9 @@
         private System.Windows.Forms.Label labelMS;
         private System.Windows.Forms.NumericUpDown numericAudioDelay;
         private System.Windows.Forms.CheckBox checkBoxAOT;
-        private System.Windows.Forms.CheckBox checkBoxPLMenu;
         private System.Windows.Forms.SaveFileDialog saveVideoDialog;
         private System.Windows.Forms.Label labelTime;
+        private System.Windows.Forms.Label labelStatus;
     }
 }
 
